@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tech_store/view/accountPage.dart';
 import './model/products.dart';
+import './view/productItemCard.dart';
 
 void main() => runApp(MyApp());
 
@@ -84,87 +85,18 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-Product product1 = Product(name: "iPhone 15 Pro", description: "The latest iPhone", price: 999.9, imagePath: 'assets/iPhone15Pro.jpeg');
-Product product2 = Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/macbookAirM3.jpg');
-Product product3 = Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/WatchSeries9.jpg');
+  Product product1 = Product(name: "iPhone 15 Pro", description: "The latest iPhone", price: 999.9, imagePath: 'assets/iPhone15Pro.jpeg');
+  Product product2 = Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/macbookAirM3.jpg');
+  Product product3 = Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/WatchSeries9.jpg');
 
-Widget _buildMainPage() {
-  return ListView(
-    children: [
-      _buildProductItem(product1),
-      _buildProductItem(product2),
-      _buildProductItem(product3)
-    ]
-  );
+  Widget _buildMainPage() {
+    return ListView(
+      children: [
+        buildProductItem(product1),
+        buildProductItem(product2),
+        buildProductItem(product3)
+      ]
+    );
+  }
+  
 }
-
-
-Widget _buildProductItem(Product product) {
-  return Card(
-    color: Color.fromARGB(255, 241, 249, 253),
-    elevation: 4, // Add elevation for a shadow effect
-    margin: EdgeInsets.all(16), // Add margin for spacing
-    child: ListTile(
-      contentPadding: EdgeInsets.all(16),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            product.name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          SizedBox(height: 8),
-          AspectRatio(
-            aspectRatio: 1, // Set aspect ratio to 1:1
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8), // Add rounded corners
-              child: Image.asset(
-                product.imagePath,
-                fit: BoxFit.cover, // Cover the entire space
-              ),
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Price: \$${product.price.toStringAsFixed(2)}',
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {}, 
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                ),
-                child: Text("Buy"),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  onPressed: () {}, 
-                  icon: Icon(Icons.favorite),
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-
-}
-
