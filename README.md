@@ -1,2 +1,2 @@
 # Tech-Store
-Mobile e-commerce application written by flutter
+Mobile e-commerce application written in flutter
