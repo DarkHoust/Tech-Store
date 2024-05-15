@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Tech Store',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        splashColor: Colors.white
+        splashColor: Colors.white,
       ),
       home: MyHomePage(),
     );
@@ -27,12 +27,39 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Tech Store'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Container(
+          decoration: BoxDecoration(
+            color: Color.fromARGB(255, 241, 249, 253),
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(color: Colors.blueGrey, width: 1.0),
+          ),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search...',
+              hintStyle: TextStyle(color: Colors.blueGrey),
+              border: InputBorder.none,
+              prefixIcon: Icon(Icons.search, color: Colors.blueGrey),
+              contentPadding: EdgeInsets.all(10.0),
+            ),
+            style: TextStyle(color: Colors.black, fontSize: 16.0),
+            onChanged: (query) {
+              setState(() {
+                _searchQuery = query;
+              });
+            },
+          ),
+        ),
       ),
       body: SafeArea(
         child: _buildBody(),
@@ -41,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         fixedColor: Colors.blue,
-        unselectedItemColor: Colors.blueGrey, // Set unselected item color here
+        unselectedItemColor: Colors.blueGrey,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
@@ -87,16 +114,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Product product1 = Product(name: "iPhone 15 Pro", description: "The latest iPhone", price: 999.9, imagePath: 'assets/iPhone15Pro.jpeg');
   Product product2 = Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/macbookAirM3.jpg');
-  Product product3 = Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/WatchSeries9.jpg');
+  Product product3 = Product(name: "Apple Watch Series 9", description: "Latest in the series", price: 399.9, imagePath: 'assets/WatchSeries9.jpg');
 
   Widget _buildMainPage() {
+    List<Product> products = [product1, product2, product3];
+
+    // Filter products based on search query
+    List<Product> filteredProducts = products.where((product) {
+      return product.name.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
+
     return ListView(
-      children: [
-        buildProductItem(product1),
-        buildProductItem(product2),
-        buildProductItem(product3)
-      ]
+      children: filteredProducts.map((product) => buildProductItem(product)).toList(),
     );
   }
-  
 }
