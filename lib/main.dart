@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tech_store/view/accountPage.dart';
 import './model/products.dart';
 import './view/productItemCard.dart';
+import 'model/categories.dart';
+import './view/catergoryItemCard.dart';
 
 void main() => runApp(MyApp());
 
@@ -112,20 +114,45 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Product product1 = Product(name: "iPhone 15 Pro", description: "The latest iPhone", price: 999.9, imagePath: 'assets/iPhone15Pro.jpeg');
-  Product product2 = Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/macbookAirM3.jpg');
-  Product product3 = Product(name: "Apple Watch Series 9", description: "Latest in the series", price: 399.9, imagePath: 'assets/WatchSeries9.jpg');
-
   Widget _buildMainPage() {
-    List<Product> products = [product1, product2, product3];
+    List<Category> categories = [
+      Category(name: "Smartphones", imagePath: 'assets/category4.jpeg'),
+      Category(name: "Appliances", imagePath: 'assets/category1.jpeg'),
+      Category(name: "Videos, audios", imagePath: 'assets/category2.jpeg'),
+      Category(name: "Laptops, PCs", imagePath: 'assets/category3.jpeg'),
+    ];
 
-    // Filter products based on search query
-    List<Product> filteredProducts = products.where((product) {
-      return product.name.toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
+    List<Product> products = [
+      Product(name: "iPhone 15 Pro", description: "The latest iPhone", price: 999.9, imagePath: 'assets/iPhone15Pro.jpeg'),
+      Product(name: "MacBook Air M3", description: "Thin and light", price: 1299.9, imagePath: 'assets/macbookAirM3.jpg'),
+      Product(name: "Apple Watch Series 9", description: "Latest in the series", price: 399.9, imagePath: 'assets/WatchSeries9.jpg')
+    ];
 
-    return ListView(
-      children: filteredProducts.map((product) => buildProductItem(product)).toList(),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 280, // Adjust the height as needed
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 3 / 2,
+              ),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                return buildCategoryCard(categories[index]);
+              },
+            ),
+          ),
+          SizedBox(height: 10.0), // Add spacing between categories and products
+          ...products.map((product) => buildProductItem(product)).toList(),
+        ],
+      ),
     );
   }
 }
+
+
