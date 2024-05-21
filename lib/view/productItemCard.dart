@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tech_store/controller/favorite_controller.dart';
 import '../model/products.dart';
 
-Widget buildProductItem(Product product) {
+// Widget to build product item
+Widget buildProductItem(Product product, Function() onAddToCart, Function() toggleFavorite) {
   return Card(
     color: Color.fromARGB(255, 241, 249, 253),
     elevation: 4,
@@ -41,12 +43,12 @@ Widget buildProductItem(Product product) {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton(
-                onPressed: () {}, 
+                onPressed: onAddToCart, // Call onAddToCart function when button is pressed
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                 ),
-                child: Text("Buy"),
+                child: Text(product.isInCart ? "Remove from Cart" : "Add to Cart"), // Change button text based on product status
               ),
               Container(
                 decoration: BoxDecoration(
@@ -54,9 +56,11 @@ Widget buildProductItem(Product product) {
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
-                  onPressed: () {}, 
-                  icon: Icon(Icons.favorite),
-                  color: Colors.white,
+                  onPressed: toggleFavorite, // Call the provided toggleFavorite callback function when favorite button is pressed
+                  icon: Icon(
+                    FavoriteController.isInFavorites(product) ? Icons.favorite : Icons.favorite_border,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
@@ -66,3 +70,6 @@ Widget buildProductItem(Product product) {
     ),
   );
 }
+
+
+

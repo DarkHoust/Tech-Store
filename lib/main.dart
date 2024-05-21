@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tech_store/controller/favorite_controller.dart';
 import 'package:tech_store/view/accountPage.dart';
 import './model/products.dart';
 import './view/productItemCard.dart';
 import 'model/categories.dart';
 import './view/catergoryItemCard.dart';
+import '../controller/cart_controller.dart';
 
 void main() => runApp(MyApp());
 
@@ -29,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
+  int _selectedCategoryIndex = 0;
   TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
@@ -104,9 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return _buildMainPage();
       case 1:
-        return Center(child: Text('No Favorite products!'));
+        return _buildFavoritePage();
       case 2:
-        return Center(child: Text('Cart is empty'));
+        return _buildCartPage();
       case 3:
         return AccountPage();
       default:
@@ -133,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 280, // Adjust the height as needed
+            height: 280,
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -147,12 +150,106 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
-          SizedBox(height: 10.0), // Add spacing between categories and products
-          ...products.map((product) => buildProductItem(product)).toList(),
+          SizedBox(height: 10.0),
+          ...products.map((product) {
+            return buildProductItem(
+              product,
+              () {
+                setState(() {
+                  if (CartController.isInCart(product)) {
+                    CartController.removeFromCart(product);
+                  } else {
+                    CartController.addToCart(product);
+                  }
+                });
+              },
+              () {
+                setState(() {
+                  if (FavoriteController.isInFavorites(product)) {
+                    FavoriteController.removeFromFavorites(product);
+                  } else {
+                    FavoriteController.addToFavorites(product);
+                  }
+                });
+              },
+            );
+          }).toList(),
         ],
       ),
     );
   }
+
+
+  Widget _buildCartPage() {
+    double totalPrice = CartController.cartItems.fold(0, (total, current) => total + current.price);
+
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: CartController.cartItems.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(CartController.cartItems[index].name),
+                subtitle: Text('\$${CartController.cartItems[index].price.toStringAsFixed(2)}'),
+                trailing: IconButton(
+                  icon: Icon(Icons.remove_shopping_cart),
+                  onPressed: () {
+                    setState(() {
+                      CartController.removeFromCart(CartController.cartItems[index]);
+                    });
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Total: \$${totalPrice.toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              // Add functionality for buying items
+              // For example, you can proceed with the payment process here
+            },
+            child: Text('Buy'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+Widget _buildFavoritePage() {
+  return ListView.builder(
+    itemCount: FavoriteController.favoriteItems.length,
+    itemBuilder: (context, index) {
+      Product product = FavoriteController.favoriteItems[index];
+      return ListTile(
+        title: Text(product.name),
+        subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+        trailing: IconButton(
+          icon: Icon(Icons.remove_circle),
+          onPressed: () {
+            setState(() {
+              FavoriteController.removeFromFavorites(product);
+            });
+          },
+        ),
+      );
+    },
+  );
 }
 
 
+
+}
