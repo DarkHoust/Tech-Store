@@ -1,13 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:tech_store/controller/favorite_controller.dart';
 import 'package:tech_store/view/accountPage.dart';
+import 'package:tech_store/view/login.dart';
 import './model/products.dart';
 import './view/productItemCard.dart';
 import 'model/categories.dart';
 import './view/catergoryItemCard.dart';
 import '../controller/cart_controller.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -19,7 +25,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         splashColor: Colors.white,
       ),
-      home: MyHomePage(),
+      home: LoginScreen(),
     );
   }
 }
